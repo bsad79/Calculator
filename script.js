@@ -23,8 +23,6 @@ var c = document.getElementById("C");
 var dotCount = 0;
 var operationCount = 0;
 var inputCount = 0;
-var lastPressed = null;
-var alreadyPressed = false;
 
 //reverse the signal of the number
 function reverse(){
@@ -141,7 +139,6 @@ function calculation(e){
     while(display.hasChildNodes()){
         display.removeChild(display.firstChild);
     }
-    lastPressed = e.target.innerText;
     resultado = +resultado.toFixed(5);
     display.appendChild(document.createTextNode(resultado));
     txt = display.innerText;
@@ -156,108 +153,138 @@ function calculation(e){
 
 //add numbers/operations
 function addElement(e){
-    if(e.target.innerText == "." ){
-        dotCount += 1;
-    }
-    if(e.target.innerText == "+" || e.target.innerText == "*" || e.target.innerText == "/"
-    || e.target.innerText == "-" || e.target.innerText == "%"){
-        dotCount = 0;
-        operationCount += 1;
-    }
     if(inputCount == 0){
-        if(e.target.innerText == "+" || e.target.innerText == "*" || e.target.innerText == "/" 
-        || e.target.innerText == "%" || e.target.innerText == "-"){
-            lastPressed = e.target.innerText;
+        if(e.target.innerText == "+" || e.target.innerText == "-" || e.target.innerText == "*"
+        || e.target.innerText == "/" || e.target.innerText == "%"){
+            
         }
         else{
             display.removeChild(display.firstChild);
             display.appendChild(document.createTextNode(e.target.innerText));
-            lastPressed = e.target.innerText;
+            inputCount += 1;
+            if(e.target.innerText == "." ){
+                dotCount += 1;
+            }
         }
     }
-    if(inputCount > 0){
-        switch (lastPressed) {
-            case ".":
-                if(lastPressed !== e.target.innerText && e.target.innerText !== "+" && e.target.innerText !== "*" &&
-                e.target.innerText !== "/" && e.target.innerText !== "-" && e.target.innerText !== "%"){
-                    display.appendChild(document.createTextNode(e.target.innerText));
-                    lastPressed = e.target.innerText;
-                    alreadyPressed = true;
-                }
-                break;
+    else{
+        let txt = display.innerText;
+        let text = txt.split('');
+        switch (e.target.innerText){
             case "-":
-                if(lastPressed !== e.target.innerText && e.target.innerText !== "+" && e.target.innerText !== "*" &&
-                e.target.innerText !== "/" && e.target.innerText !== "%"){
+                if(text[(text.length-1)] == "+" || text[(text.length-1)] == "%"
+                || text[(text.length-1)] == "*" || text[(text.length-1)] == "/"){
+                    display.removeChild(display.lastChild);
                     display.appendChild(document.createTextNode(e.target.innerText));
-                    lastPressed = e.target.innerText;
-                    alreadyPressed = true;
+                    dotCount = 0;
+                    operationCount += 1;
+                }
+                else{
+                    if(operationCount == 0){
+                        display.appendChild(document.createTextNode(e.target.innerText));
+                        dotCount = 0;
+                        operationCount += 1;
+                    }
                 }
                 break;
             case "+":
-                if(lastPressed !== e.target.innerText && e.target.innerText !== "-" && e.target.innerText !== "*" &&
-                e.target.innerText !== "/" && e.target.innerText !== "%"){
+                if(text[(text.length-1)] == "%" || text[(text.length-1)] == "-"
+                || text[(text.length-1)] == "*" || text[(text.length-1)] == "/"){
+                    display.removeChild(display.lastChild);
                     display.appendChild(document.createTextNode(e.target.innerText));
-                    lastPressed = e.target.innerText;
-                    alreadyPressed = true;
+                    dotCount = 0;
+                    operationCount += 1;
+                }
+                else{
+                    if(operationCount == 0){
+                        display.appendChild(document.createTextNode(e.target.innerText));
+                        dotCount = 0;
+                        operationCount += 1;
+                    }
                 }
                 break;
             case "*":
-                if(lastPressed !== e.target.innerText && e.target.innerText !== "+" && e.target.innerText !== "-" &&
-                e.target.innerText !== "/" && e.target.innerText !== "%"){
+                if(text[(text.length-1)] == "+" || text[(text.length-1)] == "-"
+                || text[(text.length-1)] == "%" || text[(text.length-1)] == "/"){
+                    display.removeChild(display.lastChild);
                     display.appendChild(document.createTextNode(e.target.innerText));
-                    lastPressed = e.target.innerText;
-                    alreadyPressed = true;
+                    dotCount = 0;
+                    operationCount += 1;
+                }
+                else{
+                    if(operationCount == 0){
+                        display.appendChild(document.createTextNode(e.target.innerText));
+                        dotCount = 0;
+                        operationCount += 1;
+                    }
                 }
                 break;
             case "/":
-                if(lastPressed !== e.target.innerText && e.target.innerText !== "+" && e.target.innerText !== "*" &&
-                e.target.innerText !== "-" && e.target.innerText !== "%"){
+                if(text[(text.length-1)] == "+" || text[(text.length-1)] == "-"
+                || text[(text.length-1)] == "*" || text[(text.length-1)] == "%"){
+                    display.removeChild(display.lastChild);
                     display.appendChild(document.createTextNode(e.target.innerText));
-                    lastPressed = e.target.innerText;
-                    alreadyPressed = true;
+                    dotCount = 0;
+                    operationCount += 1;
+                }
+                else{
+                    if(operationCount == 0){
+                        display.appendChild(document.createTextNode(e.target.innerText));
+                        dotCount = 0;
+                        operationCount += 1;
+                    }
+                }
+                break
+            case "%":
+                if(text[(text.length-1)] == "+" || text[(text.length-1)] == "-"
+                || text[(text.length-1)] == "*" || text[(text.length-1)] == "/"){
+                    display.removeChild(display.lastChild);
+                    display.appendChild(document.createTextNode(e.target.innerText));
+                    dotCount = 0;
+                    operationCount += 1;
+                }
+                else{
+                    if(operationCount == 0){
+                        display.appendChild(document.createTextNode(e.target.innerText));
+                        dotCount = 0;
+                        operationCount += 1;
+                    }
                 }
                 break;
-            case "%":
-                if(lastPressed !== e.target.innerText && e.target.innerText !== "+" && e.target.innerText !== "*" &&
-                e.target.innerText !== "/" && e.target.innerText !== "-"){
+            case ".":
+                if(dotCount == 0){
                     display.appendChild(document.createTextNode(e.target.innerText));
-                    lastPressed = e.target.innerText;
-                    alreadyPressed = true;
+                    dotCount += 1;
                 }
                 break;
             default:
+                display.appendChild(document.createTextNode(e.target.innerText));
                 break;
         }
-        if(lastPressed !== "-" && lastPressed !== "+" && lastPressed !== "*" && lastPressed !== "/"
-        && lastPressed !== "." && lastPressed !== "%" && alreadyPressed == false && !(dotCount > 1)
-        && !(operationCount > 1)){
-            display.appendChild(document.createTextNode(e.target.innerText));
-            lastPressed = e.target.innerText;
-        }
-        alreadyPressed = false;
     }
-    inputCount += 1;
 }
 
 //erase
 function removeElement(){
     if(display.hasChildNodes() == true){
-        if(toString(display.lastChild) == toString(".")){
+        let txt = display.innerText;
+        let text = txt.split('');
+        if(text[(text.length-1)] == "."){
             dotCount = 0;
         }
-        if(toString(display.lastChild) == toString("+")){
+        if(text[(text.length-1)] == "+"){
             operationCount = 0;
         }
-        if(toString(display.lastChild) == toString("-")){
+        if(text[(text.length-1)] == "-"){
             operationCount = 0;
         }
-        if(toString(display.lastChild) == toString("*")){
+        if(text[(text.length-1)] == "*"){
             operationCount = 0;
         }
-        if(toString(display.lastChild) == toString("/")){
+        if(text[(text.length-1)] == "/"){
             operationCount = 0;
         }
-        if(toString(display.lastChild) == toString("%")){
+        if(text[(text.length-1)] == "%"){
             operationCount = 0;
         }
         display.removeChild(display.lastChild);
